@@ -8,15 +8,13 @@ const kafka = new Kafka({
 module.exports = kafka;*/
 
 const { Kafka } = require('kafkajs');
-const fs = require('fs');
 
 const kafka = new Kafka({
   clientId: 'live-location-tracker',
+
   brokers: [process.env.KAFKA_BROKER],
 
-  ssl: {
-    rejectUnauthorized: false, // 🔥 FIX FOR RENDER / NODE SSL ISSUE
-  },
+  ssl: true,
 
   sasl: {
     mechanism: 'plain',
