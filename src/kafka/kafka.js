@@ -1,12 +1,3 @@
-/*const { Kafka } = require('kafkajs');
-
-const kafka = new Kafka({
-  clientId: 'live-location-tracker',
-  brokers: [process.env.KAFKA_BROKER]
-});
-
-module.exports = kafka;*/
-
 const { Kafka } = require('kafkajs');
 
 const kafka = new Kafka({
@@ -14,7 +5,10 @@ const kafka = new Kafka({
 
   brokers: [process.env.KAFKA_BROKER],
 
-  ssl: true,
+  // 🔴 REQUIRED for Aiven (reject self-signed cert errors)
+  ssl: {
+    rejectUnauthorized: false
+  },
 
   sasl: {
     mechanism: 'plain',
