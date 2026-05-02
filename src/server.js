@@ -69,16 +69,31 @@ app.post('/api/auth/signup', async (req, res) => {
 app.post('/api/auth/login', async (req, res) => {
   try {
     const { username, email, password } = req.body;
-    const user = await User.findOne({ $and: [{ username }, { email }] });
-    if (!user) return res.status(400).json({ error: 'Invalid credentials' });
+
+    const user = await User.findOne({
+      $or: [{ username }, { email }]
+    });
+
+    if (!user) {
+      return res.status(400).json({ error: 'Invalid credentials' });
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ error: 'Invalid credentials' });
+    if (!isMatch) {
+      return res.status(400).json({ error: 'Invalid credentials' });
+    }
 
-    const token = jwt.sign({ userId: user._id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '24h' });
+    const token = jwt.sign(
+      { userId: user._id, username: user.username },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
     res.json({ token, username: user.username });
+
   } catch (error) {
-    res.status(500).json({ error: 'Login failed' });
+    console.error('Login Error:', error);
+    res.status(500).json({ error: error.message });
   }
 });
 
