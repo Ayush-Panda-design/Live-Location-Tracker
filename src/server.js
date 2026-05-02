@@ -124,14 +124,19 @@ io.on('connection', (socket) => {
 });
 
 const PORT = process.env.PORT || 3000;
-
 const startServer = async () => {
-  await connectProducer();
-  await startConsumers(io);
-  
+  try {
+    await connectProducer();
+    await startConsumers(io);
+  } catch (err) {
+    console.error('Kafka initialization failed:', err.message);
+    // Server still starts even if Kafka is down
+  }
+
   server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
 };
+
 
 startServer().catch(console.error);
