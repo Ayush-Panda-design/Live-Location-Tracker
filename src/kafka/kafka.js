@@ -15,3 +15,5 @@ ssl: {
     password: process.env.KAFKA_PASSWORD,
   },
 });
+
+module.exports = kafka;
