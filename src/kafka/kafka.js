@@ -1,16 +1,17 @@
-const { Kafka } = require('kafkajs');
+const fs = require('fs');
 
 const kafka = new Kafka({
   clientId: 'live-location-tracker',
   brokers: [process.env.KAFKA_BROKER],
 
-  ssl: true,
+  ssl: {
+    rejectUnauthorized: true,
+    ca: [process.env.KAFKA_CA_CERT],
+  },
 
   sasl: {
-    mechanism: 'plain',   // Aiven uses "plain"
+    mechanism: 'plain',
     username: process.env.KAFKA_USERNAME,
     password: process.env.KAFKA_PASSWORD,
   },
 });
-
-module.exports = kafka;
